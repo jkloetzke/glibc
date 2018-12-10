@@ -103,18 +103,41 @@ __sem_wait_cleanup (void *arg)
    users don't seem to need it.  */
 static int
 __attribute__ ((noinline))
-do_futex_wait (struct new_sem *sem, const struct timespec *abstime)
+do_futex_wait (struct new_sem *sem, const struct timespec *abstime, int monotonic)
 {
   int err;
+  unsigned int * futex_word;
 
 #if __HAVE_64B_ATOMICS
-  err = futex_abstimed_wait_cancelable (
-      (unsigned int *) &sem->data + SEM_VALUE_OFFSET, 0, abstime,
-      sem->private);
+  futex_word = (unsigned int *) &sem->data + SEM_VALUE_OFFSET;
 #else
-  err = futex_abstimed_wait_cancelable (&sem->value, SEM_NWAITERS_MASK,
-					abstime, sem->private);
+  futex_word = &sem->value;
 #endif
+
+  if (monotonic)
+    {
+      /* CLOCK_MONOTONIC is requested.  */
+      struct timespec rt;
+      if (__clock_gettime (CLOCK_MONOTONIC, &rt) != 0)
+	__libc_fatal ("clock_gettime does not support "
+		      "CLOCK_MONOTONIC\n");
+      /* Convert the absolute timeout value to a relative
+	 timeout.  */
+      rt.tv_sec = abstime->tv_sec - rt.tv_sec;
+      rt.tv_nsec = abstime->tv_nsec - rt.tv_nsec;
+      if (rt.tv_nsec < 0)
+	{
+	  rt.tv_nsec += 1000000000;
+	  --rt.tv_sec;
+	}
+      /* Did we already time out?  */
+      if (__glibc_unlikely (rt.tv_sec < 0))
+	err = ETIMEDOUT;
+      else
+	err = futex_reltimed_wait_cancelable (futex_word, 0, &rt, sem->private);
+    }
+  else
+    err = futex_abstimed_wait_cancelable (futex_word, 0, abstime, sem->private);
 
   return err;
 }
@@ -160,7 +183,7 @@ __new_sem_wait_fast (struct new_sem *sem, int definitive_result)
 /* Slow path that blocks.  */
 static int
 __attribute__ ((noinline))
-__new_sem_wait_slow (struct new_sem *sem, const struct timespec *abstime)
+__new_sem_wait_slow (struct new_sem *sem, const struct timespec *abstime, int monotonic)
 {
   int err = 0;
 
@@ -178,7 +201,7 @@ __new_sem_wait_slow (struct new_sem *sem, const struct timespec *abstime)
       /* If there is no token available, sleep until there is.  */
       if ((d & SEM_VALUE_MASK) == 0)
 	{
-	  err = do_futex_wait (sem, abstime);
+	  err = do_futex_wait (sem, abstime, monotonic);
 	  /* A futex return value of 0 or EAGAIN is due to a real or spurious
 	     wake-up, or due to a change in the number of tokens.  We retry in
 	     these cases.
@@ -279,7 +302,7 @@ __new_sem_wait_slow (struct new_sem *sem, const struct timespec *abstime)
 	  if ((v >> SEM_VALUE_SHIFT) == 0)
 	    {
 	      /* See __HAVE_64B_ATOMICS variant.  */
-	      err = do_futex_wait(sem, abstime);
+	      err = do_futex_wait(sem, abstime, monotonic);
 	      if (err == ETIMEDOUT || err == EINTR)
 		{
 		  __set_errno (err);

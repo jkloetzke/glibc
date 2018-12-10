@@ -24,9 +24,9 @@ extern int __sem_timedwait_internal (sem_t *restrict sem,
 				     clockid_t clock_id);
 
 int
-__sem_wait (sem_t *sem)
+__sem_timedwait_monotonic (sem_t *restrict sem, const struct timespec *restrict timeout)
 {
-  return __sem_timedwait_internal (sem, 0, CLOCK_REALTIME);
+  return __sem_timedwait_internal (sem, timeout, CLOCK_MONOTONIC);
 }
 
-strong_alias (__sem_wait, sem_wait);
+strong_alias (__sem_timedwait_monotonic, sem_timedwait_monotonic);

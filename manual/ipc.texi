@@ -100,6 +100,17 @@ by @theglibc{}.
 @c Same safety issues as sem_wait.
 @end deftypefun
 
+@deftypefun int sem_timedwait_monotonic (sem_t *@var{sem}, const struct timespec *@var{abstime});
+@safety{@prelim{}@mtsafe{}@assafe{}@acunsafe{@acucorrupt{}}}
+@c Same safety issues as sem_wait.
+This function is similar to @code{sem_timedwait}, but uses
+@code{CLOCK_MONOTONIC} instead of @code{CLOCK_REALTIME} for the absolute
+timeout. This makes the timeout unaffected by changes to the system real time
+clock.
+
+This function is a GNU extension.
+@end deftypefun
+
 @deftypefun int sem_trywait (sem_t *@var{sem});
 @safety{@prelim{}@mtsafe{}@assafe{}@acsafe{}}
 @c All atomic operations are safe in all contexts.

@@ -1,3 +1,51 @@
+2018-12-13  Jan Klötzke  <jan@kloetzke.net>
+
+	[BZ #14717]
+	* htl/Makefile (libpthread-routines): Add sem-timedwait-monotonic.
+	* htl/Versions: Add sem_timedwait_monotonic.
+	* manual/ipc.texi: Likewise.
+	* nptl/Makefile: Likewise.
+	* nptl/Versions: Likewise.
+	* nptl/sem_timedwait.c (sem_timedwait): Add __new_sem_wait_slow
+	parameter.
+	* nptl/sem_timedwait_monotonic.c: New file.
+	* nptl/sem_wait.c: Add __new_sem_wait_slow parameter.
+	* nptl/sem_waitcommon.c (do_futex_wait): Add 'monotonic' parameter.
+	* sysdeps/htl/sem-timedwait-monotonic.c: New file.
+	* sysdeps/htl/sem-timedwait.c (__sem_timedwait_internal): Add
+	'clock_id' parameter.
+	(__sem_timedwait): Pass CLOCK_REALTIME to __sem_timedwait_internal.
+	* sysdeps/htl/sem-wait.c (__sem_wait): Likewise.
+	* sysdeps/mach/hurd/i386/libpthread.abilist: Add
+	sem_timedwait_monotonic.
+	* sysdeps/pthread/semaphore.h: Likewise.
+	* sysdeps/unix/sysv/linux/aarch64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/alpha/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/arm/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/hppa/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/i386/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/ia64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/m68k/coldfire/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/m68k/m680x0/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/microblaze/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/mips/mips32/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/mips/mips64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/nios2/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/libpthread-le.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/sh/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/libpthread.abilist: Likewise.
+
 2018-12-12  Joseph Myers  <joseph@codesourcery.com>
 
 	* sysdeps/x86/fpu/bits/mathinline.h (hypot): Remove inline

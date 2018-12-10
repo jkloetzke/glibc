@@ -61,6 +61,12 @@ extern int sem_timedwait (sem_t *__restrict __sem,
 			  const struct timespec *__restrict __abstime);
 #endif
 
+#ifdef __USE_GNU
+/* Similar to `sem_timedwait' but uses CLOCK_MONOTONIC.  */
+extern int sem_timedwait_monotonic (sem_t *__restrict __sem,
+			  const struct timespec *__restrict __abstime);
+#endif
+
 /* Test whether SEM is posted.  */
 extern int sem_trywait (sem_t *__sem) __THROWNL;
 

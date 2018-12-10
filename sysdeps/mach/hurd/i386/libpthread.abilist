@@ -147,3 +147,4 @@ GLIBC_2.2.6 _IO_ftrylockfile F
 GLIBC_2.2.6 _IO_funlockfile F
 GLIBC_2.21 pthread_hurd_cond_timedwait_np F
 GLIBC_2.21 pthread_hurd_cond_wait_np F
+GLIBC_2.29 sem_timedwait_monotonic F

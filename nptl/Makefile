@@ -114,7 +114,7 @@ libpthread-routines = nptl-init nptlfreeres vars events version pt-interp \
 		      sem_init sem_destroy \
 		      sem_open sem_close sem_unlink \
 		      sem_getvalue \
-		      sem_wait sem_timedwait sem_post \
+		      sem_wait sem_timedwait sem_timedwait_monotonic sem_post \
 		      cleanup cleanup_defer cleanup_compat \
 		      cleanup_defer_compat unwind \
 		      pt-longjmp pt-cleanup\
@@ -194,6 +194,7 @@ CFLAGS-pthread_once.c += $(uses-callbacks) -fexceptions \
 CFLAGS-pthread_cond_wait.c += -fexceptions -fasynchronous-unwind-tables
 CFLAGS-sem_wait.c += -fexceptions -fasynchronous-unwind-tables
 CFLAGS-sem_timedwait.c += -fexceptions -fasynchronous-unwind-tables
+CFLAGS-sem_timedwait_monotonic.c += -fexceptions -fasynchronous-unwind-tables
 
 # These are the function wrappers we have to duplicate here.
 CFLAGS-fcntl.c += -fexceptions -fasynchronous-unwind-tables

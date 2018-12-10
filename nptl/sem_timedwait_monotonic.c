@@ -1,7 +1,7 @@
-/* sem_timedwait -- wait on a semaphore with timeout.
+/* sem_timedwait_monotonic -- wait on a semaphore with timeout against CLOCK_MONOTONIC.
    Copyright (C) 2003-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Paul Mackerras <paulus@au.ibm.com>, 2003.
+   Contributed by Jan Klötzke <jan@kloetzke.net>, 2018.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -19,10 +19,10 @@
 
 #include "sem_waitcommon.c"
 
-/* This is in a separate file because because sem_timedwait is only provided
-   if __USE_XOPEN2K is defined.  */
+/* This is in a separate file because because sem_timedwait_monotonic is only
+   provided if __USE_GNU is defined.  */
 int
-sem_timedwait (sem_t *sem, const struct timespec *abstime)
+sem_timedwait_monotonic (sem_t *sem, const struct timespec *abstime)
 {
   if (abstime->tv_nsec < 0 || abstime->tv_nsec >= 1000000000)
     {
@@ -36,5 +36,6 @@ sem_timedwait (sem_t *sem, const struct timespec *abstime)
   if (__new_sem_wait_fast ((struct new_sem *) sem, 0) == 0)
     return 0;
   else
-    return __new_sem_wait_slow((struct new_sem *) sem, abstime, 0);
+    return __new_sem_wait_slow((struct new_sem *) sem, abstime, 1);
 }
+

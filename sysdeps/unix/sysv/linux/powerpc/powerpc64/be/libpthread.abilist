@@ -257,3 +257,4 @@ GLIBC_2.4 pthread_mutexattr_setprotocol F
 GLIBC_2.4 pthread_mutexattr_setrobust_np F
 GLIBC_2.6 pthread_attr_setstack F
 GLIBC_2.6 pthread_attr_setstacksize F
+GLIBC_2.29 sem_timedwait_monotonic F

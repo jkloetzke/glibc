@@ -24,7 +24,8 @@
 
 int
 __sem_timedwait_internal (sem_t *restrict sem,
-			  const struct timespec *restrict timeout)
+			  const struct timespec *restrict timeout,
+			  clockid_t clock_id)
 {
   error_t err;
   int drain;
@@ -53,7 +54,7 @@ __sem_timedwait_internal (sem_t *restrict sem,
 
   /* Block the thread.  */
   if (timeout != NULL)
-    err = __pthread_timedblock (self, timeout, CLOCK_REALTIME);
+    err = __pthread_timedblock (self, timeout, clock_id);
   else
     {
       err = 0;
@@ -92,7 +93,7 @@ __sem_timedwait_internal (sem_t *restrict sem,
 int
 __sem_timedwait (sem_t *restrict sem, const struct timespec *restrict timeout)
 {
-  return __sem_timedwait_internal (sem, timeout);
+  return __sem_timedwait_internal (sem, timeout, CLOCK_REALTIME);
 }
 
 weak_alias (__sem_timedwait, sem_timedwait);

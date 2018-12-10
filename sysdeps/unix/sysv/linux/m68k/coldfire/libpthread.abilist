@@ -243,3 +243,4 @@ GLIBC_2.4 vfork F
 GLIBC_2.4 wait F
 GLIBC_2.4 waitpid F
 GLIBC_2.4 write F
+GLIBC_2.29 sem_timedwait_monotonic F
