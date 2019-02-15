@@ -1003,6 +1003,20 @@ extern int pthread_cond_timedwait (pthread_cond_t *__restrict __cond,
 				   const struct timespec *__restrict __abstime)
      __nonnull ((1, 2, 3));
 
+#ifdef __USE_GNU
+/* Wait for condition variable COND to be signaled or broadcast until
+   ABSTIME.  MUTEX is assumed to be locked before. ABSTIME is an
+   absolute time specification measured against CLOCK.
+
+   This function is a cancellation point and therefore not marked with
+   __THROW.  */
+extern int pthread_cond_clockwait (pthread_cond_t *__restrict __cond,
+				   pthread_mutex_t *__restrict __mutex,
+				   clockid_t clock,
+				   const struct timespec *__restrict __abstime)
+     __nonnull ((1, 2, 4));
+#endif
+
 /* Functions for handling condition variable attributes.  */
 
 /* Initialize condition variable attribute ATTR.  */

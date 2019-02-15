@@ -625,6 +625,8 @@ the standard.
 @menu
 * Default Thread Attributes::             Setting default attributes for
 					  threads in a process.
+* Absolute Timeout Clocks::               Functions with absolute timeout and
+					  configurable clock.
 @end menu
 
 @node Default Thread Attributes
@@ -666,6 +668,35 @@ At least one of the values in @var{attr} does not qualify as valid for the
 attributes or the stack address is set in the attribute.
 @item ENOMEM
 The system does not have sufficient memory.
+@end table
+@end deftypefun
+
+@node Absolute Timeout Clocks
+@subsubsection Functions with absolute timeout and configurable clock
+
+@Theglibc{} provides non-standard API extensions for standard API threading
+functions with absolute timeouts. The standard variants always measure the
+timeout against @code{CLOCK_REALTIME}. The GNU extensions allow the caller to
+select @code{CLOCK_MONOTONIC} to be unaffected by possible system clock
+adjustments. Invoking the extended functions with @code{CLOCK_REALTIME} has the
+identical behaviour as their standard counter part. Currently
+@code{CLOCK_MONOTONIC} and @code{CLOCK_REALTIME} are supported.
+
+@deftypefun int pthread_cond_clockwait (pthread_cond_t *restrict @var{cond}, pthread_mutex_t *restrict @var{mutex}, clockid_t @var{clock}, const struct timespec *restrict @var{abstime})
+@standards{GNU, pthread.h}
+@safety{@prelim{}@mtsafe{}@asunsafe{@ascuheap{} @asulock{}}@acunsafe{@aculock{} @acsmem{}}}
+@c Same safety issues as pthread_cond_timedwait.
+
+This function is similar to @code{pthread_cond_timedwait}, but allows the
+calling thread to select the clock against which the absolute timeout is
+measured.
+
+Additionally to the error codes defined for @code{pthread_cond_timedwait}, this
+function can return the following error codes:
+
+@table @code
+@item ENOTSUP
+The system does not support the specified @var{clock}.
 @end table
 @end deftypefun
 

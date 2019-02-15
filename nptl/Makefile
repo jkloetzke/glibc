@@ -85,7 +85,7 @@ libpthread-routines = nptl-init nptlfreeres vars events version pt-interp \
 		      pthread_rwlockattr_getkind_np \
 		      pthread_rwlockattr_setkind_np \
 		      pthread_cond_init pthread_cond_destroy \
-		      pthread_cond_wait \
+		      pthread_cond_wait pthread_cond_clockwait \
 		      pthread_cond_signal pthread_cond_broadcast \
 		      old_pthread_cond_init old_pthread_cond_destroy \
 		      old_pthread_cond_wait old_pthread_cond_timedwait \
@@ -251,7 +251,7 @@ tests = tst-attr1 tst-attr2 tst-attr3 tst-default-attr \
 	tst-cond8 tst-cond9 tst-cond10 tst-cond11 tst-cond12 tst-cond13 \
 	tst-cond14 tst-cond15 tst-cond16 tst-cond17 tst-cond18 tst-cond19 \
 	tst-cond20 tst-cond21 tst-cond22 tst-cond23 tst-cond24 tst-cond25 \
-	tst-cond-except \
+	tst-cond26 tst-cond-except \
 	tst-robust1 tst-robust2 tst-robust3 tst-robust4 tst-robust5 \
 	tst-robust6 tst-robust7 tst-robust8 tst-robust9 \
 	tst-robustpi1 tst-robustpi2 tst-robustpi3 tst-robustpi4 tst-robustpi5 \

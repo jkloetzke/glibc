@@ -487,6 +487,10 @@ extern int __pthread_cond_wait (pthread_cond_t *cond, pthread_mutex_t *mutex);
 extern int __pthread_cond_timedwait (pthread_cond_t *cond,
 				     pthread_mutex_t *mutex,
 				     const struct timespec *abstime);
+extern int __pthread_cond_clockwait (pthread_cond_t *cond,
+				     pthread_mutex_t *mutex,
+				     clockid_t clock_id,
+				     const struct timespec *abstime);
 extern int __pthread_condattr_destroy (pthread_condattr_t *attr);
 extern int __pthread_condattr_init (pthread_condattr_t *attr);
 extern int __pthread_key_create (pthread_key_t *key, void (*destr) (void *));
@@ -529,6 +533,7 @@ hidden_proto (__pthread_testcancel)
 hidden_proto (__pthread_mutexattr_init)
 hidden_proto (__pthread_mutexattr_settype)
 hidden_proto (__pthread_timedjoin_ex)
+hidden_proto (__pthread_cond_clockwait)
 #endif
 
 extern int __pthread_cond_broadcast_2_0 (pthread_cond_2_0_t *cond);

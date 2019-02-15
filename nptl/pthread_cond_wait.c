@@ -378,7 +378,7 @@ __condvar_cleanup_waiting (void *arg)
 */
 static __always_inline int
 __pthread_cond_wait_common (pthread_cond_t *cond, pthread_mutex_t *mutex,
-    const struct timespec *abstime)
+    const struct timespec *abstime, clockid_t clock_id)
 {
   const int maxspin = 0;
   int err;
@@ -404,6 +404,18 @@ __pthread_cond_wait_common (pthread_cond_t *cond, pthread_mutex_t *mutex,
      we only need to synchronize when decrementing the reference count.  */
   unsigned int flags = atomic_fetch_add_relaxed (&cond->__data.__wrefs, 8);
   int private = __condvar_get_private (flags);
+
+  /* The user may select the clock in pthread_cond_clockwait. Otherwise it
+     is taken from the condvar attributes. */
+  switch (clock_id)
+    {
+    case CLOCK_MONOTONIC:
+      flags |= __PTHREAD_COND_CLOCK_MONOTONIC_MASK;
+      break;
+    case CLOCK_REALTIME:
+      flags &= ~__PTHREAD_COND_CLOCK_MONOTONIC_MASK;
+      break;
+    }
 
   /* Now that we are registered as a waiter, we can release the mutex.
      Waiting on the condvar must be atomic with releasing the mutex, so if
@@ -652,7 +664,7 @@ __pthread_cond_wait_common (pthread_cond_t *cond, pthread_mutex_t *mutex,
 int
 __pthread_cond_wait (pthread_cond_t *cond, pthread_mutex_t *mutex)
 {
-  return __pthread_cond_wait_common (cond, mutex, NULL);
+  return __pthread_cond_wait_common (cond, mutex, NULL, -1);
 }
 
 /* See __pthread_cond_wait_common.  */
@@ -664,8 +676,31 @@ __pthread_cond_timedwait (pthread_cond_t *cond, pthread_mutex_t *mutex,
      it can assume that abstime is not NULL.  */
   if (abstime->tv_nsec < 0 || abstime->tv_nsec >= 1000000000)
     return EINVAL;
-  return __pthread_cond_wait_common (cond, mutex, abstime);
+  return __pthread_cond_wait_common (cond, mutex, abstime, -1);
 }
+
+/* See __pthread_cond_wait_common.  */
+int
+__pthread_cond_clockwait (pthread_cond_t *cond, pthread_mutex_t *mutex,
+    clockid_t clock_id, const struct timespec *abstime)
+{
+  /* Check parameter validity.  This should also tell the compiler that
+     it can assume that abstime is not NULL.  */
+  if (abstime->tv_nsec < 0 || abstime->tv_nsec >= 1000000000)
+    return EINVAL;
+
+  /* Only a few clocks are allowed.  */
+  if (clock_id != CLOCK_MONOTONIC && clock_id != CLOCK_REALTIME)
+    return ENOTSUP;
+
+  /* If we do not support waiting using CLOCK_MONOTONIC, return an error.  */
+  if (clock_id == CLOCK_MONOTONIC
+      && !futex_supports_exact_relative_timeouts())
+    return ENOTSUP;
+
+  return __pthread_cond_wait_common (cond, mutex, abstime, clock_id);
+}
+hidden_def (__pthread_cond_clockwait)
 
 versioned_symbol (libpthread, __pthread_cond_wait, pthread_cond_wait,
 		  GLIBC_2_3_2);

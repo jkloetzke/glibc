@@ -1,5 +1,49 @@
 2019-02-28  Jan Klötzke  <jan@kloetzke.net>
 
+	* NEWS: Mention pthread_cond_clockwait.
+	* manual/threads.texi: Add pthread_cond_clockwait.
+	* nptl/Makefile (tests): Add tst-cond26.
+	(libpthread-routines): Add pthread_cond_clockwait.
+	* nptl/pthreadP.h: Add __pthread_cond_clockwait.
+	* nptl/Versions: Add pthread_cond_clockwait.
+	* nptl/pthread_cond_clockwait.c: New file.
+	* nptl/pthread_cond_wait.c (__pthread_cond_wait_common): Add clock_id
+	parameter.
+	(__pthread_cond_wait): Pass clock_id.
+	(__pthread_cond_timedwait): Pass clock_id.
+	(__pthread_cond_clockwait): New function.
+	* nptl/tst-cond26.c: New file.
+	* sysdeps/nptl/pthread.h: Add pthread_cond_clockwait.
+	* sysdeps/unix/sysv/linux/aarch64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/alpha/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/arm/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/csky/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/hppa/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/i386/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/ia64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/m68k/coldfire/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/m68k/m680x0/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/microblaze/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/mips/mips32/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/mips/mips64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/nios2/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc32/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/be/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/powerpc/powerpc64/le/libpthread.abilist:
+	Likewise.
+	* sysdeps/unix/sysv/linux/riscv/rv64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-32/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/s390/s390-64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/sh/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc32/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/sparc/sparc64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/64/libpthread.abilist: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/libpthread.abilist: Likewise.
+
+2019-02-28  Jan Klötzke  <jan@kloetzke.net>
+
 	[BZ #14717]
 	* NEWS: Mention sem_clockwait.
 	* htl/Makefile (libpthread-routines): Add sem-clockwait.

@@ -19,6 +19,10 @@ Major new features:
   Using CLOCK_MONOTONIC enables an application to wait without being affected
   by system clock adjustments.
 
+* On Linux, the pthread_cond_clockwait function has been added. It works like
+  pthread_cond_timedwait but lets the user select the clock against which the
+  absolute timeout is measured.
+
 Deprecated and removed features, and other changes affecting compatibility:
 
 * The functions clock_gettime, clock_getres, clock_settime,
