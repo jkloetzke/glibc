@@ -14,6 +14,11 @@ Major new features:
 
 * On Linux, the gettid function has been added.
 
+* The sem_clockwait function has been added. It complements sem_timedwait by
+  allowing to select the clock against which the absolute timeout is measured.
+  Using CLOCK_MONOTONIC enables an application to wait without being affected
+  by system clock adjustments.
+
 Deprecated and removed features, and other changes affecting compatibility:
 
 * The functions clock_gettime, clock_getres, clock_settime,

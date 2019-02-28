@@ -141,6 +141,9 @@ libpthread {
     pthread_hurd_cond_wait_np;
     pthread_hurd_cond_timedwait_np;
   }
+  GLIBC_2.30 {
+    sem_clockwait;
+  }
   GLIBC_PRIVATE {
     __shm_directory;
     __pthread_threads;

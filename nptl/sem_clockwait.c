@@ -1,7 +1,6 @@
-/* sem_timedwait -- wait on a semaphore with timeout.
+/* sem_clockwait -- wait on a semaphore with timeout against specific clock.
    Copyright (C) 2003-2019 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Paul Mackerras <paulus@au.ibm.com>, 2003.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -19,14 +18,29 @@
 
 #include "sem_waitcommon.c"
 
-/* This is in a separate file because because sem_timedwait is only provided
-   if __USE_XOPEN2K is defined.  */
+/* This is in a separate file because because sem_clockwait is only
+   provided if __USE_GNU is defined.  */
 int
-sem_timedwait (sem_t *sem, const struct timespec *abstime)
+sem_clockwait (sem_t *sem, clockid_t clock_id, const struct timespec *abstime)
 {
-  if (abstime->tv_nsec < 0 || abstime->tv_nsec >= 1000000000)
+  if (__glibc_unlikely (abstime->tv_nsec < 0 || abstime->tv_nsec >= 1000000000))
     {
       __set_errno (EINVAL);
+      return -1;
+    }
+
+  if (__glibc_unlikely (clock_id != CLOCK_MONOTONIC
+			&& clock_id != CLOCK_REALTIME))
+    {
+      __set_errno (ENOTSUP);
+      return -1;
+    }
+
+  /* If we do not support waiting using CLOCK_MONOTONIC, return an error.  */
+  if (clock_id == CLOCK_MONOTONIC
+      && !futex_supports_exact_relative_timeouts())
+    {
+      __set_errno (ENOTSUP);
       return -1;
     }
 
@@ -36,5 +50,6 @@ sem_timedwait (sem_t *sem, const struct timespec *abstime)
   if (__new_sem_wait_fast ((struct new_sem *) sem, 0) == 0)
     return 0;
   else
-    return __new_sem_wait_slow((struct new_sem *) sem, abstime, 0);
+    return __new_sem_wait_slow((struct new_sem *) sem, abstime,
+			       clock_id == CLOCK_MONOTONIC);
 }

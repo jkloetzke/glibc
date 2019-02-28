@@ -100,6 +100,19 @@ by @theglibc{}.
 @c Same safety issues as sem_wait.
 @end deftypefun
 
+@deftypefun int sem_clockwait (sem_t *@var{sem}, clockid_t @var{clock_id}, const struct timespec *@var{abstime});
+@safety{@prelim{}@mtsafe{}@assafe{}@acunsafe{@acucorrupt{}}}
+@c Same safety issues as sem_wait.
+This function is similar to @code{sem_timedwait}, but allows the calling thread
+to select the clock against which the absolute timeout is measured. Currently
+@code{CLOCK_MONOTONIC} and @code{CLOCK_REALTIME} are supported. Invoking this
+function with @code{CLOCK_REALTIME} has the identical behaviour as
+@code{sem_timedwait}. By using @code{CLOCK_MONOTONIC} the timeout will be
+unaffected by changes to the system real time clock.
+
+This function is a GNU extension.
+@end deftypefun
+
 @deftypefun int sem_trywait (sem_t *@var{sem});
 @safety{@prelim{}@mtsafe{}@assafe{}@acsafe{}}
 @c All atomic operations are safe in all contexts.
